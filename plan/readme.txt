@@ -1,3 +1,5 @@
+2015-02-12 proxy is ok jars is missing
+
 2015-02-10 ?? login? try proxy?
 
 2015-01-06
