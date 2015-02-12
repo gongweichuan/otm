@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="gwc-net-cn" basedir="." default="rel" >
+    <!-- =================================================================== -->
+    <!-- 变量设置 -->
+    <!-- =================================================================== -->
+    <property environment="env" />
+    <property name="project.root" value="${basedir}" />
+    <property file="gwc-net-cn.properties" />
+
+    <!-- 代码目录 -->
+    <property name="src.dir" value="${project.root}/src" />
+    <property name="src.java.dir" value="${src.dir}/java" />
+    <property name="src.jsp.dir" value="${src.dir}/webroot" />
+    <property name="src.config.dir" value="${src.dir}/config" />
+
+    <!--支持eclipse hot code replace -->
+    <available classname="org.eclipse.jdt.core.JDTCompilerAdapter" property="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+
+    <!-- 临时编译目录 -->
+    <property name="build.dir" value="${project.root}/output/build" />
+    <property name="build.jsp.dir" value="${project.root}/output/build_jsp" />
+    <property name="build.lib.dir" value="${project.root}/output/lib"></property>
+	
+	<!--Tomcat的 -->
+	
+	<path id="catalina-ant-classpath">
+	    <fileset dir="${tomcat.home.lib}">
+	        <include name="catalina-ant.jar"/>
+	        <include name="tomcat-coyote.jar"/>
+	        <include name="tomcat-util.jar"/>
+	    </fileset>
+	    <fileset dir="${tomcat.home.bin}">
+	        <include name="tomcat-juli.jar"/>
+	    </fileset>
+	</path>
+	<taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask"  classpathref="catalina-ant-classpath"/>
+	<taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask" classpathref="catalina-ant-classpath" />
+	<taskdef name="list" classname="org.apache.catalina.ant.ListTask" classpathref="catalina-ant-classpath"/>
+	<!--
+		<taskdef name="install" classname="org.apache.catalina.ant.InstallTask" />
+	-->
+	<taskdef name="reload" classname="org.apache.catalina.ant.ReloadTask" />
+	<taskdef name="start" classname="org.apache.catalina.ant.StartTask" />
+	<taskdef name="stop" classname="org.apache.catalina.ant.StopTask" />
+	
+    <!--  设置第三方包下载配置文件    -->
+    <target name="configure-lib" description="设置第三方包配置文件">       
+        <echo>设置第三方包配置文件ivy:configure url="${ivy.config.url}" </echo>
+    </target>
+
+    <!--  下载或从本地缓存获取第三方包   -->
+    <target name="get-lib" depends="configure-lib" description="下载或从本地缓存获取第三方包">
+    	<echo>下载或从本地缓存获取第三方包</echo>
+    </target>
+
+	<!-- Java编译CLASSPATH -->
+    <path id="classpath-compile">    	
+        <fileset dir="${project.lib}" />
+        <fileset file="${weblogic.jar}" />
+    </path>
+
+<!-- 
+    <taskdef name="wlserver"
+             classname="weblogic.ant.taskdefs.management.WLServer"
+             classpath="${weblogic.jar}" />
+    <taskdef name="wlconfig"
+             classname="weblogic.ant.taskdefs.management.WLConfig"
+             classpath="${weblogic.jar}" />
+    <taskdef name="wldeploy"
+             classname="weblogic.ant.taskdefs.management.WLDeploy"
+             classpath="${weblogic.jar}" />
+-->
+    <target name="deploy" depends="exploded-web-war" description="部署应用">
+        <wldeploy user="weblogic"
+                  password="weblogic"
+                  action="deploy"
+                  adminurl="t3://localhost:7001"
+                  source="${deploy.client.exploded.dir}"
+                  name="gwc">
+        </wldeploy>
+    </target>
+	
+
+	
+    <target name="redeploy" depends="exploded-web-war" description="部署应用">
+        <wldeploy user="weblogic"
+                  password="weblogic"
+                  action="redeploy"
+                  adminurl="t3://localhost:7001"
+                  source="${deploy.client.exploded.dir}"
+                  name="gwc">
+        </wldeploy>
+    </target>
+    <target name="undeploy" description="部署应用">
+        <wldeploy user="weblogic"
+                  password="weblogic"
+                  action="undeploy"
+                  adminurl="t3://localhost:7001"
+                  source="${deploy.client.exploded.dir}"
+                  name="gwc">
+        </wldeploy>
+    </target>
+
+    <target name="clean" description="清空所有输出文件包括build和部署目录">
+        <delete dir="${build.dir}" />
+    	<delete dir="${rel.dir}" />
+    </target>
+
+    <target name="compile" depends="" description="编译Java文件">
+        <mkdir dir="${build.dir}" />
+        <javac destdir="${build.dir}" fork="true" memorymaximumsize="512m"
+               source="1.5"
+               target="1.5"
+               debug="true"
+               deprecation="false"
+               optimize="false"
+               verbose="false"
+               failonerror="true"
+               encoding="UTF-8"
+        	   includeAntRuntime="false" 
+            >
+            <src path="${src.java.dir}" />
+            <classpath refid="classpath-compile" />
+        </javac>
+        <copy todir="${build.dir}">
+            <fileset dir="${src.java.dir}">
+                <include name="**/*.gif" />
+                <include name="**/*.xsd" />
+                <include name="**/*.jpg" />
+            </fileset>
+        </copy>
+    </target>
+	
+	<!-- =================================================================== -->
+    <!-- 创建用于发布的EAR包文件 -->
+    <!-- =================================================================== -->
+    <target name="web-war" depends="exploded-web-war" description="创建用于发布的EAR包文件">
+        <jar jarfile="${deploy.war.dir}/${project.name}.war" basedir="${deploy.client.exploded.dir}"        	
+            >
+        	<!-- UP 去除properties文件  
+        	            excludes="**/context-gwc.properties **/log4j.properties"
+        	 -->
+        	
+            <manifest>
+                <attribute name="Weblogic-Application-Version" value="${project.version}" />
+            </manifest>
+        </jar>
+    </target>
+
+	<target name="rel" depends="clean,get-lib,yui-compress,web-war" description="生产发布打包">
+	        <echo level="info" message="打包版本目录" />	
+    </target>
+    
+    <target name="replaceHostName" if="env.localhostname">
+        <echo>自动从环境变量localhostname获取计算机名，更改配置文件${env.localhostname}</echo>
+        <copy todir="${deploy.client.exploded.dir}/WEB-INF/classes_" overwrite="true" encoding="UTF-8" verbose="true">
+            <fileset file="${deploy.client.exploded.dir}/WEB-INF/classes/context-gwc.properties"/>
+            <filterchain>
+                <replacestring from="localhostname" to="${env.localhostname}"/>
+            </filterchain>
+        </copy>
+        <move todir="${deploy.client.exploded.dir}/WEB-INF/classes" overwrite="true">
+            <fileset dir="${deploy.client.exploded.dir}/WEB-INF/classes_"/>
+        </move>
+        <delete dir="${deploy.client.exploded.dir}/WEB-INF/classes_"></delete>
+    </target>
+    
+    <!-- =================================================================== -->
+    <!-- 创建展开目录形式的WAR应用 -->
+    <!-- =================================================================== -->
+    <target name="exploded-web-war" depends="compile" description="创建展开目录形式的EAR应用(开发模式)">
+        <mkdir dir="${deploy.client.exploded.dir}/WEB-INF/lib" />
+        <mkdir dir="${deploy.client.exploded.dir}/WEB-INF/classes" />
+
+        <!-- 创建WAR的内容 -->
+        <copy todir="${deploy.client.exploded.dir}/WEB-INF" verbose="false">
+            <fileset dir="${src.config.dir}/web">
+            	<!--去除properties文件            	
+                	<exclude name="*.properties" />
+                 -->
+            </fileset>
+        	<!-- 增加biz包里面的配置-->
+        	<fileset dir="${src.config.dir}/biz">
+        	    <exclude name="*.properties" />
+        		<exclude name="*-sqlmap-*" />
+        	</fileset>  
+        	
+        </copy>
+
+        <copy tofile="${deploy.client.exploded.dir}/WEB-INF/web.xml" file="${src.config.dir}/web/web.xml" overwrite="true"></copy>
+
+        <copy todir="${deploy.client.exploded.dir}/WEB-INF/classes" verbose="false">
+            <fileset dir="${src.config.dir}/core">
+                <exclude name="*.properties" />
+            </fileset>
+        	<fileset dir="${src.config.dir}/biz">
+        	  	<include name="*-sqlmap-*" />
+        	    <include name="*.properties"/>
+        	</fileset>
+        </copy>
+
+        <!-- MessageBundle编码转换-->
+        <native2ascii
+            encoding="UTF-8"
+            src="${src.config.dir}/web"
+            dest="${deploy.client.exploded.dir}/WEB-INF/classes"
+            includes="*.properties" />
+        <native2ascii
+            encoding="UTF-8"
+            src="${src.config.dir}/core"
+            dest="${deploy.client.exploded.dir}/WEB-INF/classes"
+            includes="*.properties" />
+        <copy todir="${deploy.client.exploded.dir}/WEB-INF/lib"
+              preservelastmodified="false"
+              flatten="true"
+              verbose="false">
+            <fileset dir="${project.lib}">
+                <include name="**/*.jar" /> 
+            	<exclude name="servlet-api.jar" />
+            </fileset>
+        </copy>
+        <copy todir="${deploy.client.exploded.dir}/WEB-INF/classes" verbose="false">
+            <fileset dir="${build.dir}/" />
+        </copy>
+        <copy todir="${deploy.client.exploded.dir}" verbose="false">
+            <fileset dir="${src.jsp.dir}/" />
+        </copy>
+        <antcall target="replaceHostName"></antcall>
+    </target>
+    <target name="yui-compress" depends="exploded-web-war">
+        <!--压缩 js css 文件-->
+        <delete>
+            <fileset dir="${deploy.client.exploded.dir}">
+                <include name="js/**/*.js" />
+                <exclude name="js/**/footer2.js" />
+            </fileset>
+        </delete>
+        <property name="yuicompressor" value="${project.lib}/yuicompressor-2.4.2.jar" />
+        <apply executable="java" parallel="false" verbose="true" dest="${project.root}/">
+            <fileset dir="${src.jsp.dir}">
+                <include name="js/**/*.js" />
+                <exclude name="js/**/footer2.js" />    
+            </fileset>
+            <arg line="-jar" />
+            <arg path="${yuicompressor}" />
+            <arg line="--type js --charset UTF-8 -o" />
+            <targetfile />
+            <mapper type="glob" from="*.js" to="${deploy.client.exploded.dir}/*.js" />
+        </apply>
+        <!--压缩完成后，删除包-->
+        <delete>
+            <fileset dir="${deploy.client.exploded.dir}/WEB-INF/lib">
+                <include name="yuicompressor-2.4.2.jar" />
+            </fileset>
+        </delete>
+    </target>
+    
+    <!-- =================================================================== -->
+    <!-- 帮助信息 -->
+    <!-- =================================================================== -->
+    <target name="usage">
+        <echo message="Pafa Application Build File" />
+        <echo message="用法：ant -[target]" />
+        <echo message="------------------------------------------------------" />
+        <echo message="[target]" />
+        <echo message="clean        --> 清空所有输出文件包括build和部署目录" />
+        <echo message="compile      --> 编译Java文件" />
+        <echo message="exploded-web-war --> 创建展开目录形式的WAR应用(开发模式)" />
+        <echo message="web-war      --> 创建发布war包，不进行js压缩" />
+        <echo message="rel          --> 创建发布zip包，进行js压缩" />
+        <echo message="deploy-web   --> 打包并发布到int环境（js不压缩）" />
+        <echo message="------------------------------------------------------" />
+    </target>
+    
+     <target name="jspc" depends="exploded-web-war">
+      <mkdir dir="${build.jsp.dir}"/>
+      <java classname="weblogic.jspc" fork="yes" maxmemory="256m">
+        <classpath>
+            <path refid="classpath-compile"/>
+            <fileset dir="${java.home}/../lib">
+              <include name="tools.jar"/>
+            </fileset>
+        </classpath>
+        <sysproperty key="weblogic.jsp.windows.caseSensitive" value="false"/>
+        <arg line=" -encoding UTF-8 -verbose -keepgenerated -maxfiles 100  -webapp ${deploy.client.exploded.dir} -d ${build.jsp.dir}"/>
+      </java>
+    </target>
+
+	<!--TOMCAT -->
+	<!-- 
+    <target name="zyx-tomcat-deploy" depends="exploded-web-war" description="部署应用">
+    	<deploy  url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}" path="/${project.name}" update="true" localWar="${deploy.client.exploded.dir}" />  		
+    </target>
+	-->
+	<target name="gwc-tomcat-deploy" depends="exploded-web-war" description="部署应用">
+	    	<deploy  url="${tomcat.manager.url}/text"
+					username="${tomcat.manager.username}" 
+	    			password="${tomcat.manager.password}" 
+	    			path="/${project.name}" 
+	    		update="true" 
+	    		war="file:${deploy.war.dir}/${project.name}.war" />  		
+	</target>
+	
+	<target name="gwc-tomcat-undeploy"   description="卸载应用" if="already.deployed"> 
+		<echo message="卸载应用"/>
+		<undeploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}" path="/${project.name}" />
+	</target> 
+	
+	<target name="gwc-tomcat-list" description="List Tomcat applications">
+		<echo message="列目录应用"/>
+	    <list url="${tomcat.manager.url}/text" 	         
+	    	username="${tomcat.manager.username}" 	          
+	    	password="${tomcat.manager.password}"/>
+	</target>
+	
+    <target name="gwc-tomcat-reload" description="Reload application in Tomcat">
+    	<echo message="重新加载应用"/>
+        <reload url="${tomcat.manager.url}/text" username="${tomcat.manager.username}" 
+        	password="${tomcat.manager.password}" path="/${project.name}" />
+    </target>
+
+    <target name="gwc-tomcat-start" description="Start Tomcat application">
+    	<echo message="启动应用"/>
+        <start url="${tomcat.manager.url}/text" username="${tomcat.manager.username}" 
+        	password="${tomcat.manager.password}" path="/${project.name}" />
+    </target>
+
+    <target name="gwc-tomcat-stop" description="Stop Tomcat application">
+    	<echo message="停止应用"/>
+        <stop url="${tomcat.manager.url}/text" username="${tomcat.manager.username}" 
+        	password="${tomcat.manager.password}" path="/${project.name}" />
+    </target>
+    	
+	<target name="gwc-tomcat-redeploy" description="Compile the web application...">
+		<tstamp prefix="start">
+		    <format property="current.date.time1" pattern="MM_dd_yyyy_HH_mm"/>
+		    <format property="current.date.time2" pattern="MM-dd-yyyy HH:mm:ss "/>
+		    <format property="current.date.time3" pattern="MM/dd/yyyy hh:mm:ss a, z"/>
+		    <!-- 设置延时，负值为过去时间，正值为未来时间，unit设置时间单位 -->
+		    <format property="current.date.time4" pattern="MM/dd/yyyy hh:mm:ss aa" offset="-10" unit="minute"/>
+		</tstamp>
+		<echo>开始: ${start.current.date.time3}</echo>
+		
+			<echo message="重部署应用"/>
+	        <echo message="Undeploying the application only if it's deployed..." />
+	        
+	        <antcall target="gwc-tomcat-undeploy" />
+	        <antcall target="rel" description="生成war包"/>
+		
+			<available file="${deploy.war.dir}/${project.name}.war" property="already.deployed" />
+	        <antcall target="gwc-tomcat-deploy" />
+			<antcall target="gwc-tomcat-list" />
+		
+		<tstamp prefix="end">
+		    <format property="current.date.time4" pattern="MM/dd/yyyy hh:mm:ss a, z"/>
+		</tstamp>
+		<echo>结束: ${end.current.date.time4}</echo>
+	</target>	
+	<!--TOMCAT End-->
+	<!--tstamp -->
+	<target name="gwc-tomcat-tstamp" description="Compile the web application...">
+		<tstamp prefix="start">
+		    <format property="current.date.time1" pattern="MM_dd_yyyy_HH_mm"/>
+		    <format property="current.date.time2" pattern="MM-dd-yyyy HH:mm:ss "/>
+		    <format property="current.date.time3" pattern="MM/dd/yyyy hh:mm:ss a, z"/>
+		    <!-- 设置延时，负值为过去时间，正值为未来时间，unit设置时间单位 -->
+		    <format property="current.date.time4" pattern="MM/dd/yyyy hh:mm:ss aa" offset="-10" unit="minute"/>
+		</tstamp>
+		<echo>开始: ${start.current.date.time2}</echo>
+	</target>
+</project>
