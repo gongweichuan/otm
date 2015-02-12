@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:aop="http://www.springframework.org/schema/aop" 
+    xmlns:tx="http://www.springframework.org/schema/tx" 
+    xsi:schemaLocation=" 
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd 
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd 
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+
+	<!-- 注册用户的Action 
+	<bean id="loginRegisterAction" class="cn.net.gwc.g.action.login.LoginRegisterAction">
+	  <property name="service">
+	     <ref bean="loginService"></ref>	  
+	  </property>
+	</bean>
+	-->
+	<!-- 显示所有用户的action 
+		<bean id="loginListAllAction" class="cn.net.gwc.g.action.login.LoginListAllAction">
+	  <property name="service">
+	     <ref bean="loginService"></ref>	  
+	  </property>
+	</bean>
+	-->
+	<bean id="otmAddMessageAction" class="cn.net.gwc.g.action.otm.OtmAddMessageAction">
+	  <property name="service">
+	     <ref bean="otmService"></ref>	  
+	  </property>
+	</bean>
+	
+	<bean id="otmAddVisitAction" class="cn.net.gwc.g.action.otm.OtmAddVisitAction">
+	  <property name="service">
+	     <ref bean="otmService"></ref>	  
+	  </property>
+	</bean>
+	
+	<bean id="otmListAllMessagesAction" class="cn.net.gwc.g.action.otm.OtmListAllMessagesAction">
+	  <property name="service">
+	     <ref bean="otmService"></ref>	  
+	  </property>
+	</bean>
+	
+	<bean id="otmListVisitsAction" class="cn.net.gwc.g.action.otm.OtmListVisitsAction">
+	  <property name="service">
+	     <ref bean="otmService"></ref>	  
+	  </property>
+	</bean>
+	
+	<bean id="otmShowMessageAction" class="cn.net.gwc.g.action.otm.OtmShowMessageAction">
+	  <property name="service">
+	     <ref bean="otmService"></ref>	  
+	  </property>
+	</bean>
+	
+	<bean id="otmShowVisitAction" class="cn.net.gwc.g.action.otm.OtmShowVisitAction">
+	  <property name="service">
+	     <ref bean="otmService"></ref>	  
+	  </property>
+	</bean>
+	
+	<bean id="otmUpdateMessageAction" class="cn.net.gwc.g.action.otm.OtmUpdateMessageAction">
+	  <property name="service">
+	     <ref bean="otmService"></ref>	  
+	  </property>
+	</bean>
+	
+	<bean id="otmUpdateVisitAction" class="cn.net.gwc.g.action.otm.OtmUpdateVisitAction">
+	  <property name="service">
+	     <ref bean="otmService"></ref>	  
+	  </property>
+	</bean>
+</beans>

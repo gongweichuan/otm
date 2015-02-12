@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="gapp">  
+   <!-- 写客户操作日志 
+    <parameterMap id="record-client-operation-log-parameters" class="java.util.Map">
+        <parameter property="IN_USER_ID" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+        
+        <parameter property="IN_USER_NAME" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+        <parameter property="IN_CLIENT_IP" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+        <parameter property="IN_OPERATE_CODE" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+		<parameter property="IN_OPERATE_TYPE" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+		<parameter property="IN_OPERATE_STATUS" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+		
+		<parameter property="IN_OPERATE_SERIAL_NO" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+		<parameter property="IN_ERROR_CODE" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+		<parameter property="IN_ERROR_DESCRIPTION" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+		<parameter property="IN_LOGON_WAY" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+		<parameter property="IN_CHANNEL_TYPE" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+        
+        <parameter property="OUT_RETCODE" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT"/>
+        <parameter property="OUT_MESSAGE" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT"/>
+    </parameterMap>
+    <procedure id="record-client-operation-log" parameterMap="record-client-operation-log-parameters">
+        {call G_CLIENT_LOG_PROC(?,?,?,?,?,?,?,?,?,?,?,?,?)}
+    </procedure> -->
+    <!-- OTM 新建消息 -->    
+    <parameterMap id="g-otm-insert-messages-parameters" class="java.util.Map">
+    	<parameter property="in_message_context" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+    	<parameter property="in_read_delay" jdbcType="INT" javaType="java.lang.Integer" mode="IN"/>
+    	<parameter property="in_unread_delay" jdbcType="INT" javaType="java.lang.Integer" mode="IN"/>
+    	<parameter property="in_access_password" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+    	<parameter property="in_read_count" jdbcType=INT javaType="java.lang.Integer" mode="IN"/>
+    	
+    	<parameter property="in_max_read_count " jdbcType="INT" javaType="java.lang.Integer" mode="IN"/>
+    	<parameter property="in_visit_count" jdbcType="INT" javaType="java.lang.Integer" mode="IN"/>
+    	<parameter property="in_message_context" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+    	<parameter property="in_create_use" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+    	<parameter property="out_message_id" jdbcType="INT" javaType="java.lang.Integer" mode="OUT"/>
+    	
+    	<parameter property="OUT_RETCODE" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT"/>
+        <parameter property="OUT_MESSAGE" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT"/>
+    </parameterMap>
+<!--     <resultMap id="g-otm-insert-messages-result" class="cn.net.gwc.g.dto.otm.OtmMessagesOutDTO">
+    	<result property="messageId" column="message_id"/>
+    	<result property="messageContext" column="message_context"/>
+    	<result property="readDelay" column="read_delay"/>
+    	<result property="unreadDelay" column="unread_delay"/>
+    	<result property="accessPassword" column="access_password"/>
+    	
+    	<result property="maxReadCount" column="max_read_count"/>
+    	<result property="readCount" column="read_count"/>
+    	<result property="visitCount" column="visit_count"/>
+    	<result property="createUser" column="create_user"/>
+    	<result property="createDate" column="create_date"/>
+    	
+    	<result property="readDate" column="read_date"/>    	
+    	<result property="updateDate" column="updateDate"/>
+    </resultMap> -->
+    <procedure id="g-otm-insert-messages" parameterMap="g-otm-insert-messages-parameters"<!--  resultMap="" -->>
+    		{call g_otm_insert_messages_proc(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}    
+    </procedure>
+    <!-- OTM更新消息 -->
+    <parameterMap id="g-otm-update-messages-parameters" class="java.util.Map">
+    	<parameter property="in_message_id" jdbcType="INT" javaType="java.lang.Integer" mode="IN"/>
+    	<parameter property="in_read_count" jdbcType="INT" javaType="java.lang.Integer" mode="IN"/>
+    	<parameter property="in_visit_count" jdbcType="INT" javaType="java.lang.Integer" mode="IN"/>
+    	<parameter property="in_case" jdbcType="INT" javaType="java.lang.Integer" mode="IN"/>
+    	
+    	<parameter property="OUT_RETCODE" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT"/>
+        <parameter property="OUT_MESSAGE" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT"/>
+    </parameterMap>
+    <procedure id="g-otm-update-messages" parameterMap="g-otm-update-messages-parameters" ><!--  resultMap="g-otm-update-messages-" -->
+    		{call g_otm_update_messages_proc(?,?,?,?,?,?)}    
+    </procedure>
+    
+    <!-- OTM查询消息 -->
+    <parameterMap id="g-otm-select-messages-parameters" class="java.util.Map">
+    	<parameter property="in_message_id" jdbcType="INT" javaType="java.lang.Integer" mode="IN"/>
+    	<parameter property="in_from_date" jdbcType="TIMESTAMP" javaType="java.util.Date" mode="IN"/>
+    	<parameter property="in_to_date" jdbcType="TIMESTAMP" javaType="java.util.Date" mode="IN"/>
+    	<parameter property="in_perpage" jdbcType="INT" javaType="java.lang.Integer" mode="IN"/>
+    	<parameter property="in_pagesize" jdbcType="INT" javaType="java.lang.Integer" mode="IN"/>
+    	
+    	<parameter property="out_totalnum" jdbcType="INT" javaType="java.lang.Integer" mode="OUT"/>
+    	<parameter property="OUT_RETCODE" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT"/>
+        <parameter property="OUT_MESSAGE" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT"/>
+    </parameterMap>
+    <resultMap id="g-otm-select-messages-result" class="cn.net.gwc.g.dto.otm.OtmMessagesOutDTO">
+    	<result property="messageId" column="message_id"/>
+    	<result property="messageContext" column="message_context"/>
+    	<result property="readDelay" column="read_delay"/>
+    	<result property="unreadDelay" column="unread_delay"/>
+    	<result property="accessPassword" column="access_password"/>
+    	
+    	<result property="maxReadCount" column="max_read_count"/>
+    	<result property="readCount" column="read_count"/>
+    	<result property="visitCount" column="visit_count"/>
+    	<result property="createUser" column="create_user"/>
+    	<result property="createDate" column="create_date"/>
+    	
+    	<result property="readDate" column="read_date"/>    	
+    	<result property="updateDate" column="updateDate"/>
+    </resultMap>
+    <procedure id="g-otm-select-messages" parameterMap="g-otm-select-messages-parameters" resultMap="g-otm-select-messages-result">
+    		{call g_otm_select_messages_proc(?,?,?,?,?,?,?,?)}
+    </procedure>    
+    <!-- OTM 新增访客信息 -->
+    <parameterMap id="g-otm-insert-visits-info-parameters" class="java.util.Map">    	
+    	<parameter property="in_isFirstSuccess " jdbcType="INT" javaType="java.lang.Integer" mode="IN"/>
+    	<parameter property="in_visits_receipt" jdbcType="INT" javaType="java.lang.String" mode="IN"/>
+    	<parameter property="in_fk_message_id " jdbcType="INT" javaType="java.lang.Integer" mode="IN"/> 
+    	<parameter property="in_session_id" jdbcType="INT" javaType="java.lang.String" mode="IN"/> 
+    	<parameter property="in_ip" jdbcType="INT" javaType="java.lang.String" mode="IN"/>
+    	
+    	<parameter property="in_refers" jdbcType="INT" javaType="java.lang.String" mode="IN"/>
+    	<parameter property="in_os_version" jdbcType="INT" javaType="java.lang.String" mode="IN"/>
+    	<parameter property="in_browser_version" jdbcType="INT" javaType="java.lang.String" mode="IN"/>
+    
+    	<parameter property="out_visits_id" jdbcType="INT" javaType="java.lang.Integer" mode="OUT"/>
+    	<parameter property="OUT_RETCODE" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT"/>
+        <parameter property="OUT_MESSAGE" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT"/>
+    </parameterMap>
+    <procedure id="g-otm-insert-visits-info" parameterMap="g-otm-insert-visits-info-parameters">
+    		{call g_otm_insert_visits_info_proc(?,?,?,?,?,?,?,?,?,?)}
+    </procedure>
+    <!-- OTM更新访客信息 -->
+    <parameterMap id="g-otm-update-visits-info-parameters" class="java.util.Map">
+        <parameter property="in_visits_id " jdbcType="INT" javaType="java.lang.Integer" mode="IN"/>
+    	<parameter property="in_isFirstSuccess " jdbcType="INT" javaType="java.lang.Integer" mode="IN"/>
+    	<parameter property="in_visits_receipt" jdbcType="INT" javaType="java.lang.String" mode="IN"/>
+    	<parameter property="in_fk_message_id " jdbcType="INT" javaType="java.lang.Integer" mode="IN"/> 
+    	<parameter property="in_session_id" jdbcType="INT" javaType="java.lang.String" mode="IN"/>
+    	 
+    	<parameter property="in_ip" jdbcType="INT" javaType="java.lang.String" mode="IN"/>    	
+    	<parameter property="in_refers" jdbcType="INT" javaType="java.lang.String" mode="IN"/>
+    	<parameter property="in_os_version" jdbcType="INT" javaType="java.lang.String" mode="IN"/>
+    	<parameter property="in_browser_version" jdbcType="INT" javaType="java.lang.String" mode="IN"/>
+        
+        <parameter property="OUT_RETCODE" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT"/>
+        <parameter property="OUT_MESSAGE" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT"/>
+    </parameterMap>
+    <procedure id="g-otm-update-visits-info" parameterMap="g-otm-update-visits-info-parameters">
+    		{call g_otm_update_visits_info_proc(?,?,?,?,?,?,?,?,?,?,?)}
+    </procedure>
+    <!-- OTM查询访客信息 -->
+    <parameterMap id="g-otm-select-visits-info-pararmeters" class="java.util.Map">
+    	<parameter property="in_fk_message_id" jdbcType="INT" javaType="java.lang.Integer" mode="IN"/>
+    	<parameter property="in_perpage" jdbcType="INT" javaType="java.lang.Integer" mode="IN"/>
+    	<parameter property="in_pagesize" jdbcType="INT" javaType="java.lang.Integer" mode="IN"/>
+    	
+    	<parameter property="out_totalnum" jdbcType="INT" javaType="java.lang.Integer" mode="OUT"/>
+    	<parameter property="OUT_RETCODE" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT"/>
+        <parameter property="OUT_MESSAGE" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT"/>
+    </parameterMap>
+    <resultMap id="g-otm-select-visits-info-result" class="cn.net.gwc.g.dto.otm.OtmVisitsInfoOutDTO">
+    	<result property="visitsId" column="visits_id"/>
+    	<result property="isFirstSuccess" column="isFirstSuccess"/>
+    	<result property="visitsReceipt" column="visits_receipt"/>
+    	<result property="fkMessageId" column="fk_message_id"/>
+    	<result property="sessionId" column="session_id"/>
+    	
+    	<result property="ip" column="ip"/>
+    	<result property="refers" column="refers"/>
+    	<result property="osVersion" column="os_version"/>
+    	<result property="browserVersion" column="browserVersion"/>
+    	<result property="visitsDate" column="visits_date"/>
+    	
+    	<result property="updateDate" column="updateDate"/>
+    </resultMap>
+    <procedure id="g-otm-select-visits-info" parameterMap="g-otm-select-visits-info-parameters" resultMap="g-otm-select-visits-info-result">
+    		{call g_otm_select_visits_info_proc(?,?,?,?,?,?)}
+    </procedure>
+</sqlMap>

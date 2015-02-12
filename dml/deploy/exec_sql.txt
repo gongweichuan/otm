@@ -1,0 +1,5 @@
+ #执行脚本的顺序
+ #
+ \. Z:\github\otm\workspace\otm11-11\dml\inc\01_tab_g_menu.sql
+ \. z:\github\otm\workspace\otm11-11\dml\pkg\01_pkg_g_menu.sql
+ \. Z:\github\otm\workspace\otm11-11\dml\inc\01_dml_g_menu.sql

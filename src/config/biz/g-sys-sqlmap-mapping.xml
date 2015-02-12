@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="gapp">  
+
+	<!-- oracle 用的是递归 start with CONNECT BY NOCYCLE PRIOR -->
+   <select id="select_menu_by_role" parameterClass="java.util.Map" resultClass="cn.net.gwc.g.dto.sys.MenuDTO">
+		  SELECT DISTINCT M2.* FROM
+				(
+				select m1.menu_id         as menuid,
+				         m1.menu_text       as menutext,
+				         m1.menu_path       as menupath,
+				         m1.menu_parent_id  as menuparentid,
+				         m1.menu_sort_value as menusortvalue,
+				         m1.attr1           as attr1,
+				         m1.attr2           as attr2,
+				         m1.attr3           as attr3
+				    from g_menu m1 where m1.menu_id in (select m.menu_id
+				                               from g_menu m, g_role_menu_map mp
+				                              where m.menu_id = mp.menu_id				                              
+	                              			    <isNotEmpty prepend="AND" property="roleNameList">
+												    MP.role_code IN
+													<iterate property="roleNameList" open="(" close=")" conjunction=","> 
+											          #roleNameList[]# 
+											        </iterate> 
+												</isNotEmpty>           
+				                             )
+				union all
+				  select m1.menu_id         as menuid,
+				         m1.menu_text       as menutext,
+				         m1.menu_path       as menupath,
+				         m1.menu_parent_id  as menuparentid,
+				         m1.menu_sort_value as menusortvalue,
+				         m1.attr1           as attr1,
+				         m1.attr2           as attr2,
+				         m1.attr3           as attr3
+				    from g_menu m1  where m1.menu_id in
+				(
+				  select distinct
+				         mp.menu_parent_id  as menuparentid        
+				    from g_menu mp where mp.menu_id in (select m.menu_id
+				                               from g_menu m, g_role_menu_map mp
+				                              where m.menu_id = mp.menu_id
+				                                <isNotEmpty prepend="AND" property="roleNameList">
+												    MP.role_code IN
+													<iterate property="roleNameList" open="(" close=")" conjunction=","> 
+											          #roleNameList[]# 
+											        </iterate> 
+												</isNotEmpty>                                                          
+				                                )
+				)
+				union all
+				  select m1.menu_id         as menuid,
+				         m1.menu_text       as menutext,
+				         m1.menu_path       as menupath,
+				         m1.menu_parent_id  as menuparentid,
+				         m1.menu_sort_value as menusortvalue,
+				         m1.attr1           as attr1,
+				         m1.attr2           as attr2,
+				         m1.attr3           as attr3 
+				    from g_menu m1  where m1.menu_id in (1)
+				)M2 ORDER BY M2.MENUSORTVALUE
+	</select>
+</sqlMap>

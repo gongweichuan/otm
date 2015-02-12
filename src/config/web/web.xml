@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd" >
+<web-app>
+
+	<!-- Session超时 -->
+	<session-config>
+		<session-timeout>15</session-timeout>
+	</session-config>
+	<!-- End Session超时 -->
+
+	<!-- 默认页面 -->
+	<welcome-file-list>
+		<welcome-file>/portal/login.jsp</welcome-file>
+	</welcome-file-list>
+	<!-- End 默认页面 -->
+
+	<!-- 标签 -->
+	<taglib>
+		<taglib-uri>http://java.sun.com/jstl/core</taglib-uri>
+		<taglib-location>/WEB-INF/tlds/c.tld</taglib-location>
+	</taglib>
+	<taglib>
+		<taglib-uri>http://java.sun.com/jstl/fmt</taglib-uri>
+		<taglib-location>/WEB-INF/tlds/fmt.tld</taglib-location>
+	</taglib>
+	<!-- 标签 -->
+
+	<!-- Spring -->
+	<servlet>
+		<servlet-name>dispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>
+				/WEB-INF/w-login-context.xml
+			   ,/WEB-INF/w-tiles-context.xml
+			   ,/WEB-INF/w-common-context.xml
+			   ,/WEB-INF/g-dbconnection-context.xml			
+			  <!--  --> ,/WEB-INF/g-login-dao-context.xml
+			   ,/WEB-INF/g-login-service-context.xml
+			   ,/WEB-INF/g-login-action-context.xml			 
+			   ,/WEB-INF/g-logger-dao-context.xml
+			   ,/WEB-INF/g-logger-service-context.xml
+			</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>*.screen</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>*.pdf</url-pattern>
+	</servlet-mapping>
+	<!-- End Spring -->
+	
+	  <!-- OtpMock-->
+    <servlet>
+	   <servlet-name>OtpMockServlet</servlet-name>
+	   <display-name>OtpMockServlet</display-name>
+	   <servlet-class>cn.net.gwc.w.login.TMockOtpController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	       <servlet-name>OtpMockServlet</servlet-name>
+	       <url-pattern>/ia/APIServlet</url-pattern>
+	</servlet-mapping>
+	<!-- End OtpMock-->
+
+     
+</web-app>

@@ -1,0 +1,8 @@
+#shell
+cd mysql
+mysql -uroot
+
+#mysql
+show databases;
+use test;
+show tables;

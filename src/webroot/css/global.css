@@ -1,0 +1,74 @@
+@CHARSET "utf-8";
+
+*{ margin:0;padding:0;}
+html{ border:0;}
+body,div,p,td,li,dd,a,span{ font-size:12px; font-family:Verdana,"宋体"; white-space:normal;}
+body{ background:#FFF;}
+h1{ font-size:26px; color:#f30;}
+h2{ font-size:14px; color:#666;}
+h3{ font-size:12px; color:#666;}
+ul{ list-style:none;}
+a img{ border:0;}
+p{ line-height:160%;}
+a{ text-decoration:none;}
+a:hover{ text-decoration:underline;}
+a.style1{}
+a.style1:hover{}
+
+
+td,table{
+   font-size:12px; 
+   color:#333333;
+   word-break: break-all;
+}
+
+p{text-indent: 2em;}
+
+li,input,select{
+   font-size:12px; 
+   color:#333333;
+   word-break: break-all;
+}
+
+/*大框架*/
+ #wrapper{ padding:0 5px 5px 15px; margin-top:10px; width:72%; float:left;}
+ #wrapper-header {margin:12px 12px 12px 20px; height:19px;}
+ #wrapperfooter{ line-height:20px; padding:0 10px 5px 15px; margin:5px auto 0 auto;}
+ 
+ /* -------------------------------- 输入框特殊定制样式 ----------------------------- */
+.input { 
+     font-size: 12px; 
+	 color: #000000; 
+	 text-decoration: none; 
+	 border: 1px #666666 solid; 
+	 margin-top: 1px; 
+	 margin-right: 1px; 
+	 margin-bottom: 1px; 
+	 margin-left: 1px; 
+	 padding-top: 1px; 
+	 padding-right: 1px; 
+	 padding-bottom: 1px; 
+	 padding-left: 1px; 
+	 height: 17px; 
+	 background-color: #FFFFFF;
+}
+
+
+/* -------------------------------- 输入框不可用时变灰处理样式 ----------------------------- */
+.input2 { 
+     font-size: 12px; 
+	 color: #000000; 
+	 text-decoration: none; 
+	 margin-top: 1px; 
+	 margin-right: 1px; 
+	 margin-bottom: 1px; 
+	 margin-left: 1px; 
+	 padding-top: 1px; 
+	 padding-right: 1px; 
+	 padding-bottom: 1px; 
+	 padding-left: 1px; 
+	 height: 17px; 
+	 background-color: #DDDDDD;
+}
+/* background:url(../images/btn/btn04.gif) no-repeat; */
+.btn{ width:86px; height:19px;  line-height:19px; text-align:center;}

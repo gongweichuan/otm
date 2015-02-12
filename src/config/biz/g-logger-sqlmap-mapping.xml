@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="gapp">  
+   <!-- 写客户操作日志 -->
+    <parameterMap id="record-client-operation-log-parameters" class="java.util.Map">
+        <parameter property="IN_USER_ID" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+        
+        <parameter property="IN_USER_NAME" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+        <parameter property="IN_CLIENT_IP" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+        <parameter property="IN_OPERATE_CODE" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+		<parameter property="IN_OPERATE_TYPE" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+		<parameter property="IN_OPERATE_STATUS" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+		
+		<parameter property="IN_OPERATE_SERIAL_NO" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+		<parameter property="IN_ERROR_CODE" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+		<parameter property="IN_ERROR_DESCRIPTION" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+		<parameter property="IN_LOGON_WAY" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+		<parameter property="IN_CHANNEL_TYPE" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+        
+        <parameter property="OUT_RETCODE" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT"/>
+        <parameter property="OUT_MESSAGE" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT"/>
+    </parameterMap>
+    <procedure id="record-client-operation-log" parameterMap="record-client-operation-log-parameters">
+        {call G_CLIENT_LOG_PROC(?,?,?,?,?,?,?,?,?,?,?,?,?)}
+    </procedure>
+</sqlMap>

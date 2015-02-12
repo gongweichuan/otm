@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans SYSTEM "../../webroot/WEB-INF/spring-beans-2.0.dtd" >
+<beans>
+    <bean id="configProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <description>配置文件</description>
+        <property name="locations">
+            <list>
+                <value>classpath:context-gwc.properties</value>                
+            </list>
+        </property>
+    </bean>
+    
+    <!--=====================================================================-->
+    <!-- 定义业务系统的消息配置文件 -->
+    <!--=====================================================================-->
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basenames">
+            <description>
+                定义业务系统消息配置文件的基本名称（basename）。
+                消息配置文件的命名格式为“[基本名称]_[语言种类].properties”，
+                例如message-error.properties和message-error_zh_CN.properties
+                的basename都为“message-error”。
+                系统首先查找和指定语言种类对应的消息配置文件，如果没有找到， 就查找它父一级的消息文件。
+                例如message-error_zh_CN.properties为简体中文的消息文件，
+                如果在CLASSPATH中没有找到该文件，系统将查找名为
+                message-error.properties的文件。 可以在这里定义多个消息配置文件的basename。
+                请参考java.util.ResourceBundle的说明文档。
+            </description>
+            <list>
+                <value>message-error</value>
+                <!-- <value>message-info</value> -->
+            </list>
+        </property>
+    </bean>
+    
+    <!-- 初始化web配置，方便应用读取配置参数 -->
+    <bean class="cn.net.gwc.g.etc.PropertiesConfiger">
+        <property name="configProperties"><ref bean="configProperties"/></property>
+        <property name="messageSource"><ref local="messageSource"/></property>
+    </bean>
+    
+    <!--=====================================================================-->
+    <!--  定义视图解析器，用哪种解析器来生成最终供用户显示的视图 -->
+    <!--=====================================================================-->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass">
+            <description>
+			                使用Tiles来解析视图，Tiles用来组装页面视图，生成最终的HTML页面。
+			                除了Tiles外，还可能用Excel、PDF等解析器。
+            </description>
+            <value>
+                org.springframework.web.servlet.view.tiles.TilesJstlView
+            </value>
+        </property>
+    </bean>
+    
+    <!-- 上传文件 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+    
+<!--     <bean id="handlerMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/> -->
+</beans>
