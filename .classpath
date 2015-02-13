@@ -83,5 +83,6 @@
 	<classpathentry kind="lib" path="lib/xss.jar"/>
 	<classpathentry kind="lib" path="lib/yeskey-api-v3.jar"/>
 	<classpathentry kind="lib" path="lib/yuicompressor-2.4.2.jar"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=otm11-11&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
